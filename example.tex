@@ -1,0 +1,57 @@
+\documentclass[a4j,fleqn,dvipdfmx,twocolumn]{jsarticle}
+\usepackage[left=20truemm,right=20truemm,top=20truemm,bottom=25truemm]{geometry}
+\usepackage{amsmath}
+\begin{document}
+\section{使い方}
+要するに著者は特に気にせず通常通り\verb+\cite{aaa,bbb}+と
+入力すればOKです．
+
+ここでは参考文献リストの動作を確認します．
+学会のテンプレートで参照されている文献\cite{1,2,3,4,5,6}は，
+左記のように表示されますが，学会のテンプレート側で上付きの${}^{1)}, {}^{2)}$といった
+処理がされます．${}^{1),2)}$や${}^{1\text{～}6)}$といった表記も
+学会のテンプレート側でやってもらえます．
+
+\section{注意点}
+\subsection{upbibtexを使ってください}
+bibtexuを使うとカンマやピリオド，スペースなどの処理がupbibtexと違うようで
+出力が乱れます．upbibtexをお使いください．
+
+ちなみに，SICE会誌本体のtexファイルは
+\begin{enumerate}
+	\item \verb+\documentclass[uplatex]{jsice}+としてuplatexでコンパイル
+	\item platexで(``u''のないコマンドで)コンパイル
+\end{enumerate}
+とするとコンパイルが通りました．
+
+\subsection{bibファイルでのページ数の記入の流儀にあわせて，設定を変更してください}
+SICEの雑誌に合わせて``aaa/bbb''といった形式にする処理を行っています．このため，
+\begin{enumerate}
+	\item bibファイルで\verb+pages = {aaa--bbb}+とダッシュ2回で記入している著者:
+	      特に設定は必要ありません．
+	\item bibファイルで\verb+pages = {aaa-bbb}+とダッシュ1回で記入している著者:
+	      \begin{verbatim}
+	      	FUNCTION {bst.slashfysingledash}
+	      	{ #0 }	  % (default)
+	      	% { #1 }
+	      \end{verbatim}
+	      の個所で\verb+{ #0 }+をコメントアウトし，\verb+{ #1 }+を有効化，つまり，
+	      \begin{verbatim}
+	      	FUNCTION {bst.slashfysingledash}
+	      	% { #0 }	  % (default)
+	      	{ #1 }
+	      \end{verbatim}
+	      として修正してご利用ください．bibファイル自体の修正は必要ありません．
+	\item bibファイルで\verb+pages = {aaa - bbb}+や
+	      \verb+pages = {aaa -- bbb}+と空白を入れて記入している著者:
+	      スペースを取る処理は現状ありませんので，
+	      \begin{enumerate}
+		      \item bibファイルを修正する
+		      \item 吐き出されたbblファイルを修正する
+	      \end{enumerate}
+	      などで修正をご検討ください．
+\end{enumerate}
+% 参考文献リスト
+\bibliographystyle{jecon_sice}
+\bibliography{sice_example}
+\end{document}
