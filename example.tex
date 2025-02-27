@@ -18,22 +18,22 @@ bibtexuを使うとカンマやピリオド，スペースなどの処理がupbi
 出力が乱れます．upbibtexをお使いください．
 
 ちなみに，SICE会誌本体のtexファイルは
-\begin{enumerate}
+\begin{itemize}
 	\item \verb+\documentclass[uplatex]{jsice}+としてuplatexでコンパイル
 	\item platexで(``u''のないコマンドで)コンパイル
-\end{enumerate}
-とするとコンパイルが通りました．
+\end{itemize}
+の双方でコンパイルが通りました．
 
 \subsection{日本名の記述の流儀にあわせて，設定を変更してください}
 オリジナルのjecon.bstから継承している設定項目です．
 \begin{enumerate}
-	\item bibファイルで\verb+author = {姓, 名}+　あるいは　\verb+{名 姓}+ 
-	と記入している(つまり英語名と同じルールで記入している)著者:
-	特に設定は必要ありません．
+	\item bibファイルで\verb+author = {姓, 名}+　あるいは　\verb+{名 姓}+
+	      と記入している(つまり英語名と同じルールで記入している)著者:
+	      特に設定は必要ありません．
 	\item bibファイルで\verb+author = {姓 名}+　あるいは \verb+{名, 姓}+
-	と記入している著者:
-	bstファイルの\verb+FUNCTION {bst.sei.mei.order}+の箇所を書き換えてください．
-	bibファイル自体の修正は必要ありません．
+	      と記入している著者:
+	      bstファイルの\verb+FUNCTION {bst.sei.mei.order}+の箇所を修正してください．
+	      bibファイル自体の修正は必要ありません．
 \end{enumerate}
 
 \subsection{bibファイルでのページ数の記入の流儀にあわせて，設定を変更してください}
@@ -42,15 +42,15 @@ SICEの雑誌に合わせて``aaa/bbb''といった形式にする処理を行�
 	\item bibファイルで\verb+pages = {aaa--bbb}+とダッシュ2回で記入している著者:
 	      特に設定は必要ありません．
 	\item bibファイルで\verb+pages = {aaa-bbb}+とダッシュ1回で記入している著者:
-	      \verb+FUNCTION {bst.slashfysingledash}+の箇所を修正してご利用ください．
+	      \verb+FUNCTION {bst.slashfysingledash}+の箇所を修正してください．
 	      bibファイル自体の修正は必要ありません．
 	\item bibファイルで\verb+pages = {aaa - bbb}+や
 	      \verb+pages = {aaa -- bbb}+と空白を入れて記入している著者:
 	      スペースを取る処理は現状bstファイルにはありませんので，
-	      \begin{enumerate}
+	      \begin{itemize}
 		      \item bibファイルを修正する
-		      \item 吐き出されたbblファイルを修正する
-	      \end{enumerate}
+		      \item 吐き出されたbblファイルを手動で修正する
+	      \end{itemize}
 	      などで修正をご検討ください．
 \end{enumerate}
 % 参考文献リスト
