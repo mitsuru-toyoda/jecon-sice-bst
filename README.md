@@ -13,7 +13,7 @@ Modified jecon.bst for SICE Journals (Unofficial)
 設定が必要になるケースがあります．詳細は example.pdf をご確認ください．
 
 # 本家 jecon.bst との違い
-1. SICE関連誌に合わせてページ数が aaa/bbb とする処理を行っています．
+1. SICE関連誌に合わせてページ数を aaa/bbb とする処理を行っています．
 1. 本家は natbib を使った \harvarditem による参照を行っていますが，
    通常の \cite で参照する形式にしています．
 

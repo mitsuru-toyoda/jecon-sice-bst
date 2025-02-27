@@ -24,27 +24,29 @@ bibtexuを使うとカンマやピリオド，スペースなどの処理がupbi
 \end{enumerate}
 とするとコンパイルが通りました．
 
+\subsection{日本名の記述の流儀にあわせて，設定を変更してください}
+オリジナルのjecon.bstから継承している設定項目です．
+\begin{enumerate}
+	\item bibファイルで\verb+author = {姓, 名}+　あるいは　\verb+{名 姓}+ 
+	と記入している(つまり英語名と同じルールで記入している)著者:
+	特に設定は必要ありません．
+	\item bibファイルで\verb+author = {姓 名}+　あるいは \verb+{名, 姓}+
+	と記入している著者:
+	bstファイルの\verb+FUNCTION {bst.sei.mei.order}+の箇所を書き換えてください．
+	bibファイル自体の修正は必要ありません．
+\end{enumerate}
+
 \subsection{bibファイルでのページ数の記入の流儀にあわせて，設定を変更してください}
 SICEの雑誌に合わせて``aaa/bbb''といった形式にする処理を行っています．このため，
 \begin{enumerate}
 	\item bibファイルで\verb+pages = {aaa--bbb}+とダッシュ2回で記入している著者:
 	      特に設定は必要ありません．
 	\item bibファイルで\verb+pages = {aaa-bbb}+とダッシュ1回で記入している著者:
-	      \begin{verbatim}
-	      	FUNCTION {bst.slashfysingledash}
-	      	{ #0 }	  % (default)
-	      	% { #1 }
-	      \end{verbatim}
-	      の個所で\verb+{ #0 }+をコメントアウトし，\verb+{ #1 }+を有効化，つまり，
-	      \begin{verbatim}
-	      	FUNCTION {bst.slashfysingledash}
-	      	% { #0 }	  % (default)
-	      	{ #1 }
-	      \end{verbatim}
-	      として修正してご利用ください．bibファイル自体の修正は必要ありません．
+	      \verb+FUNCTION {bst.slashfysingledash}+の箇所を修正してご利用ください．
+	      bibファイル自体の修正は必要ありません．
 	\item bibファイルで\verb+pages = {aaa - bbb}+や
 	      \verb+pages = {aaa -- bbb}+と空白を入れて記入している著者:
-	      スペースを取る処理は現状ありませんので，
+	      スペースを取る処理は現状bstファイルにはありませんので，
 	      \begin{enumerate}
 		      \item bibファイルを修正する
 		      \item 吐き出されたbblファイルを修正する

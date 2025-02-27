@@ -3,7 +3,7 @@
 % Author: Mitsuru Toyoda (豊田 充)
 % 下記のjecon.bstをSICE関係のジャーナルに適合するよう修正した派生版です．
 % jecon.bstの作者の武田先生に感謝いたします．
-%　
+% 
 %% jecon.bst: 経済学用 BibTeX スタイルファイル（BibTeX style file for economics）
 %
 % Author: Shiro Takeda (武田史郎)
@@ -44,7 +44,7 @@
 
 
 % version 指定
-FUNCTION {jecon_sice.version} { "6.5.1_SICE_0.1" }
+FUNCTION {jecon_sice.version} { "6.5.1_SICE_0.11" }
 FUNCTION {jecon.version} { "6.5.1" }
 
 % Debug mode．0 以外を指定すると様々な情報を表示させることが可能．
@@ -174,6 +174,8 @@ FUNCTION {bst.hide.mei}
 %
 FUNCTION {bst.title.lower.case}
 { #0 }	  % #0 なら小文字に変換しない (そのまま)  (default)
+% { #-1 }    % #-1 なら，各単語の1文字目を大文字に変換する 
+% (暫定版, of や the まで大文字にしてしまうので，最終的に手で直さないといけない)
 % { #1 }    % #0 以外なら、小文字に変換する。
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1126,13 +1128,13 @@ FUNCTION {bst.touten.jp}
 % 0 を指定すれば，page を繋ぐ 1つの "-" を "/" に変更しない．
 % デフォルトで "--" を "-" にします (for SICE)
 FUNCTION {bst.slashfysingledash}
-{ #0 }	  % (default)
-% { #1 }
+{ #0 }  % (default, "--"のみ"/"に変更します)
+% { #1 }  % ("--"と"-"を"/"に変更します)
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 % 非ゼロを指定すると \bibitem を出力しない．
-% オリジナルの　jecon　では　\harvarditem　を用いていたが，
+% オリジナルの jecon では \harvarditem を用いていたが，
 % 論文集では natbib パッケージの使用は想定されていない模様だったので，
 % すべて \cite{} と \bibitem{} で完結するようにした [toyoda]
 FUNCTION {bst.bibitem.off}
@@ -1280,6 +1282,7 @@ STRINGS { hang }
 STRINGS { item.type }
 STRINGS { tempa tempb tempc }
 STRINGS { templang }
+STRINGS { w first rest } % 追加
 
 %% 整数型大域変数
 INTEGERS { nameptr namesleft numnames  alphabet.in.author name.num numtrunc }
@@ -2313,10 +2316,57 @@ FUNCTION {remove.irrelevant.pre.kutoten}
 }
 
 %%% title の整形
+FUNCTION {trim.head} % 文字列先頭のスペースを削除
+{
+  's :=
+   s empty$ not
+   s #1 #1 substring$ " " = and % 文字が空でなく，かつ，先頭1文字が " " か確認
+      { s #2 global.max$ substring$ 's := }   % 先頭1文字を削除し，s を更新
+      { skip$ }
+  if$
+  s
+}
+
+FUNCTION {pop.firstword} % 文字列の最初の単語を取り出す
+{
+  's :=
+  "" 'w :=
+  { s empty$ not
+    s #1 #1 substring$ " " = not and }
+	  { w s #1 #1 substring$ * 'w := % sの1文字目をとってwに追加
+	    s #2 global.max$ substring$ 's := } % sの1文字目を削除
+  while$
+  s trim.head 's := % 残ったsの方の最初にスペースあれば削除
+  w
+}
+
+FUNCTION {capitalize.words} % 文字列の各単語の1文字目を大文字にする
+{
+  's :=
+  "" 't :=
+  { s empty$ not }
+    { s pop.firstword 'w :=
+	  % "{" などが来ると warning が出るがとりあえず修正保留
+      w #1 #1 substring$ "u" change.case$ 'first :=
+	  % 2文字目から最後まで取り出し
+      w #2 global.max$ substring$ 'rest :=
+	  s empty$
+	    { t * first rest * 't := } % 残りが空のときは結合して終わり
+        { t * first rest * " " * 't := } % 残りが空でなければスペース挿入
+	  if$
+    }
+  while$
+  t
+}
+
 FUNCTION {format.title.sub}
-{ bst.title.lower.case #0 =
-     { bst.title.pre title * bst.title.post * }
-     { bst.title.pre title "t" change.case$ * bst.title.post * }
+{ bst.title.lower.case #-1 = % -1なら最初の文字を大文字にする (暫定版)
+     { bst.title.pre title capitalize.words "t" change.case$ * bst.title.post * }
+	 { bst.title.lower.case #0 = % 1なら最初の文字を小文字にする，それ以外はそのまま
+         { bst.title.pre title * bst.title.post * }
+         { bst.title.pre title "t" change.case$ * bst.title.post * }
+	   if$
+	 }
   if$
 }
 
@@ -3414,7 +3464,7 @@ FUNCTION {format.note}
 }
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%	 オリジナルの　jecon　では　\harvarditem　を用いていたが， 
+%	 オリジナルの jecon では \harvarditem を用いていたが， 
 %    \bibitem にして簡略化 [toyoda]
 
 FUNCTION {output.number.index}
